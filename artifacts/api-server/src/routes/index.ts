@@ -1,8 +1,8 @@
 import { Router, type IRouter } from "express";
-import healthRouter from "./health";
+import machineMonitoringRouter from "./machine-monitoring";
 
 const router: IRouter = Router();
 
-router.use(healthRouter);
+router.use(machineMonitoringRouter);
 
 export default router;
