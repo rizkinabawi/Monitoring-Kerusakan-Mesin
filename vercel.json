@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "framework": "vite",
+  "buildCommand": "pnpm run build:vercel",
+  "outputDirectory": "artifacts/machine-monitoring/dist/public",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/index.ts": {
+      "runtime": "@vercel/node@3",
+      "maxDuration": 30
+    }
+  }
+}
