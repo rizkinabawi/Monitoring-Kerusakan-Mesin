@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "node -e \"const agent = process.env.npm_config_user_agent || ''; if (!agent.startsWith('pnpm/')) { console.error('Use pnpm instead'); process.exit(1); }\"",
-    "build:vercel": "pnpm --filter @workspace/machine-monitoring run build",
+    "build:vercel": "pnpm --filter @workspace/machine-monitoring run build && pnpm --filter @workspace/api-server exec esbuild ../../api-src/index.ts --bundle --platform=node --target=node18 --outfile=../../api/index.js --format=cjs",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
