@@ -5,23 +5,32 @@ import { logger } from "../lib/logger";
 import { breakdowns, maintenance, machines, users } from "./schema";
 
 const demoMachines = [
-  { machineCode: "M001", name: "Mesin Packing", line: "Line A" },
-  { machineCode: "M002", name: "Conveyor Utama", line: "Line A" },
-  { machineCode: "M003", name: "Mesin Filling", line: "Line B" },
-  { machineCode: "M004", name: "Labeler Otomatis", line: "Line B" },
-  { machineCode: "M005", name: "Mesin Sealer", line: "Line C" },
-  { machineCode: "M006", name: "Palletizer", line: "Line C" },
+  { machineCode: "M001", name: "Static Zinc Line", line: "Plating Equipment" },
+  { machineCode: "M002", name: "Barrel Zinc Line", line: "Plating Equipment" },
+  { machineCode: "M003", name: "Electroless Nickel Line", line: "Plating Equipment" },
+  { machineCode: "M004", name: "Barrel Nickel Line", line: "Plating Equipment" },
+  { machineCode: "M005", name: "Barrel Tin Line", line: "Plating Equipment" },
+  { machineCode: "M006", name: "Composite Line", line: "Plating Equipment" },
+  { machineCode: "M007", name: "Static Zinc Nickel (High Ni) Line", line: "Plating Equipment" },
+  { machineCode: "M008", name: "Chromic Acid / Blackening Line", line: "Plating Equipment" },
+  { machineCode: "M009", name: "Static Sn (Tin) Line (New)", line: "Plating Equipment" },
+  { machineCode: "I001", name: "Fluorescent X-ray Thickness Gauge", line: "Inspection Equipment" },
+  { machineCode: "I002", name: "Atomic Absorption Spectrophotometer", line: "Inspection Equipment" },
+  { machineCode: "I003", name: "Salt Spray Test Equipment", line: "Inspection Equipment" },
+  { machineCode: "I004", name: "Microscope", line: "Inspection Equipment" },
+  { machineCode: "I005", name: "Hardness Tester", line: "Inspection Equipment" },
+  { machineCode: "I006", name: "Cross-section Analyzer", line: "Inspection Equipment" },
 ];
 
 const demoIncidents = [
-  { code: "M001", daysAgo: 2, hour: 8, minutes: 10, duration: 50, problem: "Mesin packing berhenti mendadak", cause: "Bearing aus", action: "Ganti bearing dan lakukan alignment", part: "Bearing 6205" },
-  { code: "M003", daysAgo: 4, hour: 10, minutes: 25, duration: 35, problem: "Tekanan filling tidak stabil", cause: "Seal pneumatik bocor", action: "Ganti seal dan uji tekanan", part: "Seal kit 20 mm" },
-  { code: "M002", daysAgo: 6, hour: 13, minutes: 5, duration: 72, problem: "Conveyor berhenti saat produksi", cause: "Sensor posisi kotor", action: "Bersihkan dan kalibrasi sensor", part: null },
-  { code: "M004", daysAgo: 9, hour: 9, minutes: 40, duration: 28, problem: "Label tidak menempel sempurna", cause: "Roller penekan longgar", action: "Setel roller penekan", part: null },
-  { code: "M001", daysAgo: 12, hour: 14, minutes: 0, duration: 94, problem: "Suhu motor packing meningkat", cause: "Kipas pendingin rusak", action: "Ganti kipas pendingin motor", part: "Fan motor 24V" },
-  { code: "M005", daysAgo: 15, hour: 7, minutes: 20, duration: 43, problem: "Hasil sealing tidak rapat", cause: "Elemen pemanas melemah", action: "Ganti elemen pemanas", part: "Heater strip 300 mm" },
-  { code: "M006", daysAgo: 19, hour: 11, minutes: 15, duration: 61, problem: "Palletizer gagal mengambil palet", cause: "Limit switch tidak terbaca", action: "Atur ulang posisi limit switch", part: "Limit switch" },
-  { code: "M003", daysAgo: 24, hour: 15, minutes: 30, duration: 38, problem: "Pompa filling mengeluarkan suara kasar", cause: "Kopling pompa longgar", action: "Kencangkan kopling dan uji beban", part: null },
+  { code: "M001", daysAgo: 2, hour: 8, minutes: 10, duration: 50, problem: "Voltage drop during plating", cause: "Rectifier issue", action: "Replaced rectifier module", part: "Rectifier Unit 50A" },
+  { code: "M003", daysAgo: 4, hour: 10, minutes: 25, duration: 35, problem: "Temperature fluctuation", cause: "Heater malfunction", action: "Replaced heater element", part: "Heater 1500W" },
+  { code: "M002", daysAgo: 6, hour: 13, minutes: 5, duration: 72, problem: "Barrel rotation jammed", cause: "Motor bearing wear", action: "Cleaned and replaced bearing", part: "Bearing 6204" },
+  { code: "I001", daysAgo: 9, hour: 9, minutes: 40, duration: 28, problem: "Calibration error", cause: "Software glitch", action: "Restarted and recalibrated", part: null },
+  { code: "M001", daysAgo: 12, hour: 14, minutes: 0, duration: 94, problem: "Pump noise increased", cause: "Filter clog", action: "Cleaned and replaced filter", part: "Filter Cartridge 10um" },
+  { code: "I003", daysAgo: 15, hour: 7, minutes: 20, duration: 43, problem: "Spray nozzle blocked", cause: "Salt buildup", action: "Cleaned nozzle", part: "Nozzle tip" },
+  { code: "M006", daysAgo: 19, hour: 11, minutes: 15, duration: 61, problem: "Hoist movement error", cause: "Limit switch failed", action: "Adjusted limit switch", part: "Limit switch" },
+  { code: "M003", daysAgo: 24, hour: 15, minutes: 30, duration: 38, problem: "Chemical leak", cause: "Valve seal worn", action: "Tightened valve and replaced seal", part: "Teflon seal" },
 ];
 
 async function seed() {
@@ -104,7 +113,7 @@ async function seed() {
         });
       }
 
-      for (const [index, code] of ["M002", "M005"].entries()) {
+      for (const [index, code] of ["M002", "I005"].entries()) {
         const machineId = machineIds.get(code);
         if (!machineId) continue;
         const startedAt = new Date(now - (index + 1) * 90 * 60 * 1000);
@@ -114,12 +123,12 @@ async function seed() {
             machineId,
             problem:
               index === 0
-                ? "Belt conveyor perlu pemeriksaan"
-                : "Suhu sealer di luar batas operasi",
+                ? "Barrel rotation irregular"
+                : "Display screen unresponsive",
             cause:
               index === 0
-                ? "Tegangan belt menurun"
-                : "Sensor temperatur menunjukkan nilai tidak stabil",
+                ? "Worn drive gear"
+                : "Loose connection",
             startedAt,
             status: "open",
             createdBy: user.id,
@@ -132,9 +141,9 @@ async function seed() {
         if (index === 0) {
           await tx.insert(maintenance).values({
             breakdownId: created.id,
-            action: "Pemeriksaan awal dan penyetelan tegangan belt",
+            action: "Initial inspection and gear alignment",
             componentReplaced: null,
-            notes: "Menunggu pemeriksaan lanjutan.",
+            notes: "Waiting for replacement gear.",
             userId: user.id,
           });
         }

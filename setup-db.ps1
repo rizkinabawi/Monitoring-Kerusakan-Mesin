@@ -39,6 +39,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Seeding database..."
+$env:SEED_ADMIN_PASSWORD="supersecretpassword123"
 pnpm --filter @workspace/api-server run db:seed
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to seed database"
