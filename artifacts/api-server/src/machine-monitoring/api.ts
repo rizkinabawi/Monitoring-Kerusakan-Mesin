@@ -15,6 +15,7 @@ import {
   desc,
   eq,
   gte,
+  ilike,
   lt,
   sql,
   type SQL,
@@ -134,7 +135,7 @@ function dateConditions(
     const exclusiveEnd = new Date(filters.end.getTime() + 24 * 60 * 60 * 1000);
     conditions.push(lt(breakdowns.startedAt, exclusiveEnd));
   }
-  if (filters.line) conditions.push(eq(machines.line, filters.line));
+  if (filters.line) conditions.push(ilike(machines.line, `%${filters.line}%`));
   if (filters.machineId) {
     conditions.push(eq(breakdowns.machineId, filters.machineId));
   }
@@ -237,7 +238,7 @@ async function listMachines(request: Request) {
   const database = getDatabase();
   const filters = machineFilters(request);
   const conditions: SQL[] = [];
-  if (filters.line) conditions.push(eq(machines.line, filters.line));
+  if (filters.line) conditions.push(ilike(machines.line, `%${filters.line}%`));
   if (filters.status) conditions.push(eq(machines.status, filters.status));
   const rows = await database
     .select()
@@ -732,7 +733,7 @@ async function dashboardSummary(request: Request) {
   }
 
   const machineConditions: SQL[] = [];
-  if (filters.line) machineConditions.push(eq(machines.line, filters.line));
+  if (filters.line) machineConditions.push(ilike(machines.line, `%${filters.line}%`));
   if (filters.machineId) machineConditions.push(eq(machines.id, filters.machineId));
   const [machineCounts] = await database
     .select({
