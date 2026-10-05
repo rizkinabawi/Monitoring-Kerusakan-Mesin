@@ -5,8 +5,8 @@
     "rootDir": ".",
     "lib": ["ES2022", "DOM"],
     "types": ["node"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "skipLibCheck": true,
     "noEmit": true
   },
