@@ -302,6 +302,40 @@ function MachineSelect({ selected }: { selected: number }) {
   return <select name="machine_id" defaultValue={selected} className="h-10 w-full rounded-lg border border-input bg-white px-3 text-sm" data-testid="select-edit-machine">{machines.data?.success && machines.data.data.map(m => <option key={m.id} value={m.id}>{m.machine_code} — {m.name}</option>)}</select>;
 }
 
+function exportToCsv(rows: typeof data, filename: string) {
+  const headers = [
+    "Incident ID", "Machine Code", "Machine Name", "Line",
+    "Problem", "Cause", "Status",
+    "Started At", "Completed At", "Downtime (Minutes)",
+  ];
+  const escape = (v: unknown) => {
+    const s = v == null ? "" : String(v);
+    return s.includes(",") || s.includes('"') || s.includes("\n")
+      ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const csvRows = [
+    headers.join(","),
+    ...rows.map(b => [
+      `INC-${String(b.id).padStart(5, "0")}`,
+      b.machine_code,
+      b.machine_name,
+      b.line,
+      b.problem,
+      (b as any).cause ?? "",
+      b.status,
+      b.started_at ? new Date(b.started_at).toLocaleString("en-GB") : "",
+      b.completed_at ? new Date(b.completed_at).toLocaleString("en-GB") : "",
+      b.downtime_minutes ?? "",
+    ].map(escape).join(",")),
+  ];
+  const bom = "\uFEFF"; // UTF-8 BOM so Excel reads it correctly
+  const blob = new Blob([bom + csvRows.join("\r\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
 function HistoryPage() {
   const [range, setRange] = useState<{ start_date?: string; end_date?: string }>({});
   const [line, setLine] = useState("");
@@ -310,13 +344,33 @@ function HistoryPage() {
   const params = { ...range, ...(line ? { line } : {}), ...(machine ? { machine_id: Number(machine) } : {}), ...(status ? { status: status as "open" | "completed" } : {}), page: 1, limit: 50 };
   const history = useGetHistory(params); const machines = useListMachines();
   const data = history.data?.success ? history.data.data : [];
+
+  const handleExport = () => {
+    const now = new Date().toISOString().slice(0, 10);
+    exportToCsv(data, `incident-report-${now}.csv`);
+  };
+
   return <>
-    <PageHeading eyebrow="Catatan peralatan" title="Riwayat insiden" description="Cari kerusakan terdahulu dan tinjau hasil perawatannya." />
-    <Card className="mb-4 rounded-xl border-[#e5e2d9] shadow-none"><div className="flex flex-wrap items-end gap-2 p-3"><RangeFilters value={range} onChange={setRange} line={line} setLine={setLine} /><Field label="Mesin"><select value={machine} onChange={e => setMachine(e.target.value)} className="h-10 min-w-[175px] rounded-lg border border-input bg-white px-3 text-sm" data-testid="select-history-machine"><option value="">Semua mesin</option>{machines.data?.success && machines.data.data.map(m => <option key={m.id} value={m.id}>{m.machine_code} — {m.name}</option>)}</select></Field><Field label="Status"><select value={status} onChange={e => setStatus(e.target.value)} className="h-10 rounded-lg border border-input bg-white px-3 text-sm" data-testid="select-history-status"><option value="">Semua status</option><option value="open">Terbuka</option><option value="completed">Selesai</option></select></Field></div></Card>
-    <Card className="rounded-xl border-[#e5e2d9] shadow-none"><div className="flex items-center justify-between border-b border-[#efede7] p-4"><div><h2 className="text-sm font-semibold">Riwayat insiden</h2><p className="mt-1 text-xs text-muted-foreground">{history.data?.success ? `${history.data.pagination.total} catatan` : "Insiden peralatan sesuai filter"}</p></div><History className="size-4 text-muted-foreground" /></div>
-      {history.isLoading ? <LoadingRows /> : history.isError ? <div className="p-4"><LoadError message={errorText(history.error)} retry={() => history.refetch()} /></div> : data.length ? <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Insiden</TableHead><TableHead>Mesin</TableHead><TableHead>Lini</TableHead><TableHead>Mulai</TableHead><TableHead>Selesai</TableHead><TableHead>Waktu henti</TableHead><TableHead>Status</TableHead></TableRow></TableHeader><TableBody>{data.map(b => <TableRow key={b.id} data-testid={`row-history-${b.id}`}><TableCell><Link href={`/breakdowns/${b.id}`} className="block max-w-[240px] truncate font-medium text-[#244858] hover:underline">{b.problem}</Link><span className="font-mono text-[10px] text-muted-foreground">INC-{String(b.id).padStart(5, "0")}</span></TableCell><TableCell><div className="font-mono text-[11px]">{b.machine_code}</div><div className="text-xs text-muted-foreground">{b.machine_name}</div></TableCell><TableCell>{b.line}</TableCell><TableCell className="whitespace-nowrap text-xs">{date(b.started_at)}</TableCell><TableCell className="whitespace-nowrap text-xs">{date(b.completed_at)}</TableCell><TableCell className="font-mono text-xs">{minutes(b.downtime_minutes)}</TableCell><TableCell><Status value={b.status} /></TableCell></TableRow>)}</TableBody></Table></div> : <Empty icon={History} title="Tidak ada riwayat yang cocok" message="Coba rentang tanggal, mesin, lini, atau status yang berbeda." />}</Card>
+    <PageHeading eyebrow="Equipment records" title="Incident History" description="Search past breakdowns and review maintenance outcomes.">
+      {data.length > 0 && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleExport}
+          data-testid="button-export-csv"
+          className="gap-2 rounded-lg border-[#d8d9d2] bg-white text-sm font-medium shadow-none hover:bg-[#f5f4ef]"
+        >
+          <ArrowDownRight className="size-4 text-emerald-700" />
+          Download CSV
+        </Button>
+      )}
+    </PageHeading>
+    <Card className="mb-4 rounded-xl border-[#e5e2d9] shadow-none"><div className="flex flex-wrap items-end gap-2 p-3"><RangeFilters value={range} onChange={setRange} line={line} setLine={setLine} /><Field label="Machine"><select value={machine} onChange={e => setMachine(e.target.value)} className="h-10 min-w-[175px] rounded-lg border border-input bg-white px-3 text-sm" data-testid="select-history-machine"><option value="">All machines</option>{machines.data?.success && machines.data.data.map(m => <option key={m.id} value={m.id}>{m.machine_code} — {m.name}</option>)}</select></Field><Field label="Status"><select value={status} onChange={e => setStatus(e.target.value)} className="h-10 rounded-lg border border-input bg-white px-3 text-sm" data-testid="select-history-status"><option value="">All statuses</option><option value="open">Open</option><option value="completed">Completed</option></select></Field></div></Card>
+    <Card className="rounded-xl border-[#e5e2d9] shadow-none"><div className="flex items-center justify-between border-b border-[#efede7] p-4"><div><h2 className="text-sm font-semibold">Incident Records</h2><p className="mt-1 text-xs text-muted-foreground">{history.data?.success ? `${history.data.pagination.total} records found` : "Equipment incidents matching filter"}</p></div><History className="size-4 text-muted-foreground" /></div>
+      {history.isLoading ? <LoadingRows /> : history.isError ? <div className="p-4"><LoadError message={errorText(history.error)} retry={() => history.refetch()} /></div> : data.length ? <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Incident</TableHead><TableHead>Machine</TableHead><TableHead>Line</TableHead><TableHead>Started</TableHead><TableHead>Completed</TableHead><TableHead>Downtime</TableHead><TableHead>Status</TableHead></TableRow></TableHeader><TableBody>{data.map(b => <TableRow key={b.id} data-testid={`row-history-${b.id}`}><TableCell><Link href={`/breakdowns/${b.id}`} className="block max-w-[240px] truncate font-medium text-[#244858] hover:underline">{b.problem}</Link><span className="font-mono text-[10px] text-muted-foreground">INC-{String(b.id).padStart(5, "0")}</span></TableCell><TableCell><div className="font-mono text-[11px]">{b.machine_code}</div><div className="text-xs text-muted-foreground">{b.machine_name}</div></TableCell><TableCell>{b.line}</TableCell><TableCell className="whitespace-nowrap text-xs">{date(b.started_at)}</TableCell><TableCell className="whitespace-nowrap text-xs">{date(b.completed_at)}</TableCell><TableCell className="font-mono text-xs">{minutes(b.downtime_minutes)}</TableCell><TableCell><Status value={b.status} /></TableCell></TableRow>)}</TableBody></Table></div> : <Empty icon={History} title="No matching history" message="Try a different date range, machine, line, or status." />}</Card>
   </>;
 }
+
 
 function AnalyticsPage() {
   const [range, setRange] = useState<{ start_date?: string; end_date?: string }>({});
