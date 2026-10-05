@@ -360,7 +360,7 @@ function ExportPanel({ machines }: { machines: { id: number; name: string; machi
       if (end_date) params.set("end_date", end_date);
       if (exportMachine) params.set("machine_id", exportMachine);
       params.set("limit", "500");
-      const resp = await fetch(`/api/history?${params}`);
+      const resp = await fetch(`/api/history?${params}`, { credentials: "include" });
       if (!resp.ok) throw new Error("Failed to fetch data");
       const json = await resp.json();
       const rows: BreakdownRow[] = json?.data ?? [];
