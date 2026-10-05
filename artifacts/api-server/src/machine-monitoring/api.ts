@@ -392,6 +392,27 @@ async function listBreakdowns(request: Request, paged: boolean) {
   });
 }
 
+async function exportBreakdowns(request: Request) {
+  const database = getDatabase();
+  const filters = queryFilters(request);
+  if (filters.status && !["open", "completed"].includes(filters.status)) {
+    throw badInput("Status kerusakan tidak valid.");
+  }
+  const conditions = dateConditions(filters);
+  if (filters.status) {
+    conditions.push(eq(breakdowns.status, filters.status as "open" | "completed"));
+  }
+  const where = conditions.length ? and(...conditions) : undefined;
+  const rows = await database
+    .select(breakdownSelection)
+    .from(breakdowns)
+    .innerJoin(machines, eq(breakdowns.machineId, machines.id))
+    .where(where)
+    .orderBy(desc(breakdowns.startedAt), desc(breakdowns.id))
+    .limit(1000);
+  return Response.json({ success: true, data: rows });
+}
+
 async function createBreakdown(request: Request, userId: number) {
   const input = await body(request, CreateBreakdownBody);
   const database = getDatabase();
@@ -846,6 +867,9 @@ export async function handleApiRequest(request: Request) {
       return await updateMaintenance(parseId(segments[1]), request);
     }
 
+    if (method === "GET" && path === "/history/export") {
+      return await exportBreakdowns(request);
+    }
     if (method === "GET" && path === "/history") {
       return await listBreakdowns(request, true);
     }
