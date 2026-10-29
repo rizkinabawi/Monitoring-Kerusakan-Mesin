@@ -215,6 +215,9 @@ const breakdownSelection = {
   downtime_minutes: breakdowns.downtimeMinutes,
   status: breakdowns.status,
   created_by: breakdowns.createdBy,
+  reporter_name: sql<string>`(
+    select name from users where users.id = ${breakdowns.createdBy}
+  )`,
   created_at: breakdowns.createdAt,
   updated_at: breakdowns.updatedAt,
   maintenance_count: sql<number>`(

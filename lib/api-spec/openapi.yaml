@@ -623,6 +623,8 @@ components:
           $ref: "#/components/schemas/BreakdownStatus"
         created_by:
           type: integer
+        reporter_name:
+          type: string
         created_at:
           type: string
           format: date-time
@@ -631,7 +633,7 @@ components:
           format: date-time
         maintenance_count:
           type: integer
-      required: [id, machine_id, machine_code, machine_name, line, problem, cause, started_at, completed_at, downtime_minutes, status, created_by, created_at, updated_at, maintenance_count]
+      required: [id, machine_id, machine_code, machine_name, line, problem, cause, started_at, completed_at, downtime_minutes, status, created_by, reporter_name, created_at, updated_at, maintenance_count]
     BreakdownInput:
       type: object
       properties:

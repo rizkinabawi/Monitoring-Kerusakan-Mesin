@@ -147,6 +147,7 @@ export interface Breakdown {
   downtime_minutes: number | null;
   status: BreakdownStatus;
   created_by: number;
+  reporter_name: string;
   created_at: string;
   updated_at: string;
   maintenance_count: number;
