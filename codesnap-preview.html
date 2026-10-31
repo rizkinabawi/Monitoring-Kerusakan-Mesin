@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>CodeSnap Viewer - Monitoring Kerusakan Mesin</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    pre, code, .font-mono { font-family: 'Fira Code', monospace; }
+    .bg-gradient-mesh {
+      background: radial-gradient(at 10% 20%, #6366f1 0px, transparent 50%),
+                  radial-gradient(at 90% 10%, #f43f5e 0px, transparent 50%),
+                  radial-gradient(at 50% 90%, #06b6d4 0px, transparent 50%),
+                  #1e1e2e;
+    }
+    .bg-gradient-sunset {
+      background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    }
+    .bg-gradient-emerald {
+      background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);
+    }
+    .bg-gradient-midnight {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    }
+    .bg-clean-dark {
+      background: #0f172a;
+    }
+    /* Simple custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen p-4 sm:p-6 md:p-8">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 mb-6 border-b border-slate-800 gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-amber-400">
+          <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          CodeSnap Gallery · Bab 4 Laporan Capstone
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+          Galeri CodeSnap Antarmuka Sistem
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+          Pilih halaman di bawah untuk melihat tampilan snapcode siap tangkap layar (screenshot).
+        </p>
+      </div>
+      
+      <!-- Theme Controls -->
+      <div class="flex items-center gap-2 flex-wrap bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+        <span class="text-xs text-slate-400 pl-1 font-medium">Latar Belakang:</span>
+        <button onclick="changeBg('bg-gradient-mesh')" class="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-rose-500 border border-white/40 shadow-sm focus:scale-110 transition" title="Mesh Aurora"></button>
+        <button onclick="changeBg('bg-gradient-midnight')" class="w-6 h-6 rounded-full bg-gradient-to-tr from-blue-700 to-indigo-800 border border-white/40 shadow-sm focus:scale-110 transition" title="Midnight Blue"></button>
+        <button onclick="changeBg('bg-gradient-sunset')" class="w-6 h-6 rounded-full bg-gradient-to-tr from-orange-400 to-rose-400 border border-white/40 shadow-sm focus:scale-110 transition" title="Sunset Glow"></button>
+        <button onclick="changeBg('bg-clean-dark')" class="w-6 h-6 rounded-full bg-slate-900 border border-slate-600 shadow-sm focus:scale-110 transition" title="Dark Slate"></button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-xs font-medium border-b border-slate-800/80">
+      <button onclick="switchTab('login')" id="tab-login" class="tab-btn px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-semibold shadow-sm transition">
+        1. Login (login.tsx)
+      </button>
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        2. Dashboard (dashboard.tsx)
+      </button>
+      <button onclick="switchTab('machines')" id="tab-machines" class="tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        3. Mesin (machines.tsx)
+      </button>
+      <button onclick="switchTab('breakdowns')" id="tab-breakdowns" class="tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        4. Kerusakan (breakdowns.tsx)
+      </button>
+      <button onclick="switchTab('detail')" id="tab-detail" class="tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        5. Detail (breakdown-detail.tsx)
+      </button>
+      <button onclick="switchTab('history')" id="tab-history" class="tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        6. Riwayat (history.tsx)
+      </button>
+      <button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        7. Analitik (analytics.tsx)
+      </button>
+      <button onclick="switchTab('app')" id="tab-app" class="tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+        8. Router (App.tsx)
+      </button>
+    </div>
+
+    <!-- Active Page Info & Copy Action -->
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 id="page-title" class="text-base font-semibold text-white">Halaman Login Staf (src/pages/login.tsx)</h2>
+        <p id="page-desc" class="text-xs text-slate-400">Autentikasi akun staf & operator pabrik menggunakan form terproteksi</p>
+      </div>
+      <button onclick="copyCurrentCode()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-amber-400 border border-slate-700 shadow transition active:scale-95">
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        <span id="copy-btn-text">Salin Kode</span>
+      </button>
+    </div>
+
+    <!-- CodeSnap Container Canvas -->
+    <div id="snap-bg" class="bg-gradient-mesh p-6 sm:p-10 md:p-12 rounded-2xl shadow-2xl transition-all duration-300">
+      
+      <!-- macOS Window Mockup -->
+      <div class="bg-[#181825]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden max-w-4xl mx-auto">
+        
+        <!-- Window Titlebar -->
+        <div class="flex items-center justify-between px-4 py-3 bg-[#11111b]/90 border-b border-white/5 select-none">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+            <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+            <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+          </div>
+          <span id="window-title" class="text-xs font-mono text-slate-400 font-medium tracking-wide">
+            login.tsx — Machine Monitoring
+          </span>
+          <span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">TSX</span>
+        </div>
+
+        <!-- Code Area -->
+        <div class="p-4 sm:p-6 overflow-x-auto text-[13px] leading-relaxed font-mono">
+          <pre id="code-content" class="text-slate-200"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips Laporan -->
+    <div class="mt-8 p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div>
+        <strong class="text-slate-200">Tips untuk Laporan Capstone:</strong>
+        Gunakan tombol <code class="text-amber-400 bg-slate-800 px-1 py-0.5 rounded">Win + Shift + S</code> (Snipping Tool di Windows) untuk langsung menangkap area kartu di atas dan paste (<code class="text-amber-400 bg-slate-800 px-1 py-0.5 rounded">Ctrl + V</code>) ke Microsoft Word atau Google Docs!
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pages = {
+      login: {
+        title: "Halaman Login Staf (src/pages/login.tsx)",
+        desc: "Autentikasi akun staf & operator pabrik menggunakan form terproteksi",
+        filename: "login.tsx — Machine Monitoring",
+        code: `import { useState, type FormEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
+import { ArrowRight, Factory, ShieldCheck } from "lucide-react";
+import { useLogin, getGetMeQueryKey } from "@workspace/api-client-react";
+import { Button } from "@/components/ui/button";
+import { Field, TextInput, errorText } from "@/components/shared/common";
+
+export default function LoginPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [issue, setIssue] = useState("");
+  const [, setLocation] = useLocation();
+  const client = useQueryClient();
+  const login = useLogin();
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    setIssue("");
+    login.mutate(
+      { data: { username, password } },
+      {
+        onSuccess: async () => {
+          await client.invalidateQueries({ queryKey: getGetMeQueryKey() });
+          setLocation("/dashboard");
+        },
+        onError: (e) => setIssue(errorText(e)),
+      }
+    );
+  };
+
+  return (
+    <main className="grid min-h-[100dvh] bg-[#f2f1eb] lg:grid-cols-[1fr_1fr]">
+      {/* Kolom Branding Kiri */}
+      <section className="relative hidden bg-[#203b49] p-12 text-[#f5f1e8] lg:flex lg:flex-col lg:justify-between">
+        <div className="relative flex items-center gap-3">
+          <div className="grid size-10 place-items-center rounded-xl bg-amber-400 text-slate-900">
+            <Factory className="size-5" />
+          </div>
+          <span className="text-sm font-semibold tracking-wide">SHIFT / MONITOR</span>
+        </div>
+        <div className="relative max-w-lg">
+          <h1 className="text-5xl font-semibold leading-[1.08] tracking-[-.05em]">
+            Setiap menit<br />tercatat.
+          </h1>
+          <p className="mt-5 max-w-md text-base text-slate-300">
+            Pantau kondisi mesin, kerusakan yang sedang ditangani, dan pekerjaan perawatan.
+          </p>
+        </div>
+      </section>
+
+      {/* Kolom Formulir Login Kanan */}
+      <section className="flex items-center justify-center px-6 py-12">
+        <form onSubmit={submit} className="w-full max-w-[390px] space-y-5">
+          <Field label="Nama pengguna">
+            <TextInput required value={username} onChange={(e) => setUsername(e.target.value)} />
+          </Field>
+          <Field label="Kata sandi">
+            <TextInput type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          </Field>
+          {issue && <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-rose-800">{issue}</div>}
+          <Button type="submit" disabled={login.isPending} className="h-11 w-full bg-[#244858]">
+            {login.isPending ? "Sedang masuk…" : "Masuk"}
+            <ArrowRight className="size-4" />
+          </Button>
+        </form>
+      </section>
+    </main>
+  );
+}`
+      },
+      dashboard: {
+        title: "Halaman Dashboard Ringkasan (src/pages/dashboard.tsx)",
+        desc: "Ringkasan KPI operasional, status terkini mesin, dan daftar insiden terbuka",
+        filename: "dashboard.tsx — Machine Monitoring",
+        code: `import { useState } from "react";
+import { Link } from "wouter";
+import { Activity, AlertTriangle, Clock3, Cog, Plus, Wrench } from "lucide-react";
+import {
+  useGetDashboardDowntime,
+  useGetDashboardFrequency,
+  useGetDashboardSummary,
+  useListBreakdowns,
+} from "@workspace/api-client-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Status, PageHeading, RangeFilters, minutes } from "@/components/shared/common";
+
+export default function DashboardPage() {
+  const [range, setRange] = useState({});
+  const [line, setLine] = useState("");
+  const params = { ...range, ...(line ? { line } : {}) };
+
+  const summary = useGetDashboardSummary(params);
+  const downtime = useGetDashboardDowntime(params);
+  const frequency = useGetDashboardFrequency(params);
+  const breakdowns = useListBreakdowns({ status: "open", limit: 6, page: 1 });
+
+  const s = summary.data?.success ? summary.data.data : undefined;
+  const down = downtime.data?.success ? downtime.data.data : [];
+
+  return (
+    <>
+      <PageHeading eyebrow="Operasional / status terkini" title="Ringkasan giliran kerja" description="Kondisi mesin dan waktu henti di area produksi.">
+        <Link href="/breakdowns">
+          <Button className="h-10 bg-[#244858]"><Plus className="size-4" />Laporkan kerusakan</Button>
+        </Link>
+      </PageHeading>
+
+      <div className="mb-5"><RangeFilters value={range} onChange={setRange} line={line} setLine={setLine} /></div>
+
+      {/* Ringkasan Metrik KPI */}
+      {s && (
+        <div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Card className="p-5"><span className="text-xs text-muted-foreground">Kerusakan terbuka</span><div className="text-[28px] font-semibold">{s.open_breakdowns}</div></Card>
+          <Card className="p-5"><span className="text-xs text-muted-foreground">Total waktu henti</span><div className="text-[28px] font-semibold">{minutes(s.total_downtime)}</div></Card>
+          <Card className="p-5"><span className="text-xs text-muted-foreground">Mesin aktif</span><div className="text-[28px] font-semibold">{s.active_machines}</div></Card>
+          <Card className="p-5"><span className="text-xs text-muted-foreground">Total kerusakan</span><div className="text-[28px] font-semibold">{s.total_breakdowns}</div></Card>
+        </div>
+      )}
+
+      {/* Progres Waktu Henti per Mesin */}
+      <Card className="rounded-xl border-[#e5e2d9]">
+        <CardHeader><CardTitle className="text-sm">Waktu henti per mesin</CardTitle></CardHeader>
+        <CardContent className="divide-y divide-[#efede7]">
+          {down.slice(0, 5).map((item) => (
+            <div key={item.machine_id} className="grid grid-cols-[1fr_auto] gap-3 py-3">
+              <div>
+                <span className="font-mono text-xs font-semibold text-[#244858]">{item.machine_code}</span>
+                <span className="ml-2 text-xs text-muted-foreground">{item.machine_name}</span>
+              </div>
+              <div className="font-mono text-sm font-semibold">{minutes(item.total_downtime)}</div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </>
+  );
+}`
+      },
+      machines: {
+        title: "Halaman Master Mesin (src/pages/machines.tsx)",
+        desc: "Direktori aset peralatan, formulir pendaftaran, pengubahan, dan filter lini",
+        filename: "machines.tsx — Machine Monitoring",
+        code: `import { useState, type FormEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Cog, Plus, Search, Settings2, X } from "lucide-react";
+import { useListMachines, useCreateMachine, useUpdateMachine, getListMachinesQueryKey } from "@workspace/api-client-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Status, PageHeading, Field, TextInput } from "@/components/shared/common";
+
+export default function MachinePage() {
+  const [editing, setEditing] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const machines = useListMachines();
+  const client = useQueryClient();
+  const create = useCreateMachine();
+  const update = useUpdateMachine();
+
+  const save = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const payload = { machine_code: String(f.get("machine_code")), name: String(f.get("name")), line: String(f.get("line")) };
+    const onSuccess = () => { setEditing(null); setFormOpen(false); client.invalidateQueries({ queryKey: getListMachinesQueryKey() }); };
+    if (editing) update.mutate({ id: editing.id, data: payload }, { onSuccess });
+    else create.mutate({ data: payload }, { onSuccess });
+  };
+
+  return (
+    <>
+      <PageHeading eyebrow="Daftar aset" title="Mesin" description="Data peralatan dan status operasional terkini.">
+        <Button className="h-10 bg-[#244858]" onClick={() => { setEditing(null); setFormOpen(!formOpen); }}>
+          <Plus className="size-4" />Tambah mesin
+        </Button>
+      </PageHeading>
+
+      {formOpen && (
+        <Card className="mb-5 bg-[#fffdf8]">
+          <form className="grid gap-3 p-5 sm:grid-cols-3" onSubmit={save}>
+            <Field label="Kode mesin"><TextInput name="machine_code" required defaultValue={editing?.machine_code} /></Field>
+            <Field label="Nama mesin"><TextInput name="name" required defaultValue={editing?.name} /></Field>
+            <Field label="Lini produksi"><TextInput name="line" required defaultValue={editing?.line} /></Field>
+            <div className="flex gap-2 sm:col-span-3">
+              <Button type="submit">{editing ? "Simpan perubahan" : "Daftarkan mesin"}</Button>
+              <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>Batal</Button>
+            </div>
+          </form>
+        </Card>
+      )}
+
+      <Table>
+        <TableHeader><TableRow><TableHead>Mesin</TableHead><TableHead>Lini</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Aksi</TableHead></TableRow></TableHeader>
+        <TableBody>
+          {(machines.data?.success ? machines.data.data : []).map((m) => (
+            <TableRow key={m.id}>
+              <TableCell><div className="font-mono text-xs font-semibold">{m.machine_code}</div><div>{m.name}</div></TableCell>
+              <TableCell>{m.line}</TableCell>
+              <TableCell><Status value={m.status} /></TableCell>
+              <TableCell className="text-right"><Button variant="ghost" size="sm" onClick={() => { setEditing(m); setFormOpen(true); }}><Settings2 className="size-3.5 mr-1" />Ubah</Button></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
+  );
+}`
+      },
+      breakdowns: {
+        title: "Halaman Kerusakan (src/pages/breakdowns.tsx)",
+        desc: "Pencatatan insiden kerusakan baru saat mesin berhenti dan tabel status",
+        filename: "breakdowns.tsx — Machine Monitoring",
+        code: `import { useState, type FormEvent } from "react";
+import { Link } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, Plus } from "lucide-react";
+import { useListMachines, useListBreakdowns, useCreateBreakdown, getListBreakdownsQueryKey } from "@workspace/api-client-react";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Status, PageHeading, Field, TextInput, date } from "@/components/shared/common";
+
+export default function BreakdownPage() {
+  const [filter, setFilter] = useState("open");
+  const [showForm, setShowForm] = useState(false);
+  const client = useQueryClient();
+  const machines = useListMachines({ status: "active" });
+  const list = useListBreakdowns({ status: filter === "all" ? undefined : filter, limit: 50, page: 1 });
+  const create = useCreateBreakdown();
+
+  const save = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    create.mutate({
+      data: {
+        machine_id: Number(f.get("machine_id")),
+        problem: String(f.get("problem")),
+        cause: String(f.get("cause")),
+        started_at: new Date(String(f.get("started_at"))).toISOString(),
+      }
+    }, {
+      onSuccess: () => { client.invalidateQueries({ queryKey: getListBreakdownsQueryKey() }); setShowForm(false); }
+    });
+  };
+
+  return (
+    <>
+      <PageHeading eyebrow="Penanganan insiden" title="Kerusakan" description="Catat gangguan produksi dan pantau tindak lanjut perawatannya.">
+        <Button onClick={() => setShowForm(!showForm)} className="h-10 bg-[#244858]"><Plus className="size-4" />Laporkan kerusakan</Button>
+      </PageHeading>
+
+      <Table>
+        <TableHeader><TableRow><TableHead>Insiden</TableHead><TableHead>Mesin</TableHead><TableHead>Mulai</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+        <TableBody>
+          {(list.data?.success ? list.data.data : []).map((b) => (
+            <TableRow key={b.id}>
+              <TableCell><Link href={\`/breakdowns/\${b.id}\`} className="font-medium text-[#244858]">{b.problem}</Link></TableCell>
+              <TableCell>{b.machine_code} - {b.line}</TableCell>
+              <TableCell className="text-xs">{date(b.started_at)}</TableCell>
+              <TableCell><Status value={b.status} /></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
+  );
+}`
+      },
+      detail: {
+        title: "Halaman Detail Kerusakan (src/pages/breakdown-detail.tsx)",
+        desc: "Timeline log perawatan teknisi dan penyelesaian otomatis downtime",
+        filename: "breakdown-detail.tsx — Machine Monitoring",
+        code: `import { useRoute } from "wouter";
+import { Check, Clock3, Wrench } from "lucide-react";
+import { useGetBreakdown, useAddMaintenance, useCompleteBreakdown } from "@workspace/api-client-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Status, PageHeading, minutes, date } from "@/components/shared/common";
+
+export default function BreakdownDetailPage() {
+  const [, params] = useRoute("/breakdowns/:id");
+  const id = Number(params?.id || 0);
+  const query = useGetBreakdown(id);
+  const detail = query.data?.success ? query.data.data : undefined;
+  const complete = useCompleteBreakdown();
+  const open = detail?.status === "open";
+
+  return (
+    <>
+      <PageHeading eyebrow={\`INC-\${String(detail?.id).padStart(5, "0")}\`} title={detail?.problem || ""} description={\`\${detail?.machine_code} · \${detail?.line}\`}>
+        <Status value={detail?.status || "open"} />
+      </PageHeading>
+
+      <div className="grid gap-4 xl:grid-cols-[1fr_350px]">
+        {/* Timeline Log Perawatan */}
+        <Card>
+          <CardHeader><CardTitle className="text-sm">Log Tindakan Perawatan</CardTitle></CardHeader>
+          <CardContent className="divide-y divide-[#efede7]">
+            {detail?.maintenance.map((m) => (
+              <div key={m.id} className="py-3 flex items-start gap-3">
+                <Wrench className="size-4 mt-1 text-[#244858]" />
+                <div>
+                  <div className="font-medium text-sm">{m.action}</div>
+                  {m.component_replaced && <p className="text-xs text-muted-foreground">Komponen: {m.component_replaced}</p>}
+                  <p className="text-[10px] text-muted-foreground">Oleh {m.user_name} pada {date(m.created_at)}</p>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Panel Selesaikan Insiden */}
+        <Card className="p-5">
+          <div className="text-sm font-semibold mb-3">Status Kerusakan</div>
+          {open ? (
+            <Button className="w-full bg-[#244858]" disabled={!detail?.maintenance.length || complete.isPending} onClick={() => complete.mutate({ id, data: { completed_at: new Date().toISOString() } })}>
+              <Check className="size-4 mr-2" />Selesaikan & Hitung Downtime
+            </Button>
+          ) : (
+            <div className="text-xs text-emerald-800">Kerusakan selesai. Downtime: {minutes(detail?.downtime_minutes)}</div>
+          )}
+        </Card>
+      </div>
+    </>
+  );
+}`
+      },
+      history: {
+        title: "Halaman Riwayat & Export CSV (src/pages/history.tsx)",
+        desc: "Pencarian rekaman masa lalu dan unduh berkas spreadsheet CSV",
+        filename: "history.tsx — Machine Monitoring",
+        code: `import { useState } from "react";
+import { ArrowDownRight, History } from "lucide-react";
+import { useGetHistory, useListMachines } from "@workspace/api-client-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Status, PageHeading, RangeFilters, date, minutes } from "@/components/shared/common";
+import { ExportPanel } from "@/pages/history";
+
+export default function HistoryPage() {
+  const [range, setRange] = useState({});
+  const history = useGetHistory({ ...range, page: 1, limit: 50 });
+  const machines = useListMachines();
+  const machineList = machines.data?.success ? machines.data.data : [];
+
+  return (
+    <>
+      <PageHeading eyebrow="Equipment records" title="Incident History" description="Search past breakdowns and review maintenance outcomes.">
+        <ExportPanel machines={machineList} />
+      </PageHeading>
+
+      <Table>
+        <TableHeader><TableRow><TableHead>Insiden</TableHead><TableHead>Mesin</TableHead><TableHead>Mulai</TableHead><TableHead>Selesai</TableHead><TableHead>Downtime</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+        <TableBody>
+          {(history.data?.success ? history.data.data : []).map((b) => (
+            <TableRow key={b.id}>
+              <TableCell className="font-medium">{b.problem}</TableCell>
+              <TableCell>{b.machine_code}</TableCell>
+              <TableCell className="text-xs">{date(b.started_at)}</TableCell>
+              <TableCell className="text-xs">{date(b.completed_at)}</TableCell>
+              <TableCell className="font-mono text-xs">{minutes(b.downtime_minutes)}</TableCell>
+              <TableCell><Status value={b.status} /></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
+  );
+}`
+      },
+      analytics: {
+        title: "Halaman Analitik Grafik (src/pages/analytics.tsx)",
+        desc: "Visualisasi BarChart frekuensi kerusakan & diagram sebaran mesin",
+        filename: "analytics.tsx — Machine Monitoring",
+        code: `import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useGetDashboardFrequency, useGetDashboardDowntime } from "@workspace/api-client-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeading } from "@/components/shared/common";
+
+export default function AnalyticsPage() {
+  const frequency = useGetDashboardFrequency({});
+  const downtime = useGetDashboardDowntime({});
+
+  const freqData = (frequency.data?.success ? frequency.data.data : []).slice(0, 8).map((d) => ({
+    name: d.machine_code,
+    value: d.breakdown_count,
+  }));
+
+  const downtimeData = (downtime.data?.success ? downtime.data.data : []).slice(0, 8).map((d) => ({
+    name: d.machine_code,
+    value: Math.floor(d.total_downtime / 60),
+  }));
+
+  return (
+    <>
+      <PageHeading eyebrow="Wawasan operasional" title="Analitik Mesin" description="Pola kerusakan dan waktu henti secara visual." />
+
+      <div className="grid gap-5 xl:grid-cols-2">
+        <Card>
+          <CardHeader><CardTitle className="text-sm">Frekuensi Kerusakan per Mesin</CardTitle></CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={freqData}><XAxis dataKey="name" /><YAxis /><Tooltip /><Bar dataKey="value" fill="#f59e0b" radius={[4, 4, 0, 0]} /></BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader><CardTitle className="text-sm">Total Waktu Henti per Mesin (Jam)</CardTitle></CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={downtimeData}><XAxis dataKey="name" /><YAxis /><Tooltip /><Bar dataKey="value" fill="#f43f5e" radius={[4, 4, 0, 0]} /></BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+    </>
+  );
+}`
+      },
+      app: {
+        title: "Router Aplikasi Utama (src/App.tsx)",
+        desc: "Inisialisasi konfigurasi query provider, router protected switch, dan tema",
+        filename: "App.tsx — Machine Monitoring",
+        code: `"use client";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Route, Router, Switch } from "wouter";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
+
+// Import Halaman Terpisah
+import LoginPage from "@/pages/login";
+import DashboardPage from "@/pages/dashboard";
+import MachinePage from "@/pages/machines";
+import BreakdownPage from "@/pages/breakdowns";
+import BreakdownDetailPage from "@/pages/breakdown-detail";
+import HistoryPage from "@/pages/history";
+import AnalyticsPage from "@/pages/analytics";
+
+const qc = new QueryClient({ defaultOptions: { queries: { retry: 1 } } });
+
+export default function App() {
+  return (
+    <QueryClientProvider client={qc}>
+      <TooltipProvider>
+        <Router>
+          <Switch>
+            <Route path="/login"><LoginPage /></Route>
+            <Route path="/"><DashboardPage /></Route>
+            <Route path="/dashboard"><DashboardPage /></Route>
+            <Route path="/machines"><MachinePage /></Route>
+            <Route path="/breakdowns"><BreakdownPage /></Route>
+            <Route path="/breakdowns/:id"><BreakdownDetailPage /></Route>
+            <Route path="/history"><HistoryPage /></Route>
+            <Route path="/analytics"><AnalyticsPage /></Route>
+          </Switch>
+        </Router>
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}`
+      }
+    };
+
+    let activeTab = "login";
+
+    function switchTab(key) {
+      activeTab = key;
+      const data = pages[key];
+      
+      // Update Tab Styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-4 py-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 transition";
+      });
+      document.getElementById('tab-' + key).className = "tab-btn px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-semibold shadow-sm transition";
+      
+      // Update Texts
+      document.getElementById('page-title').innerText = data.title;
+      document.getElementById('page-desc').innerText = data.desc;
+      document.getElementById('window-title').innerText = data.filename;
+      
+      // Update Code with line numbers
+      const lines = data.code.split('\n');
+      const formatted = lines.map((line, idx) => {
+        const num = String(idx + 1).padStart(2, ' ');
+        return `<span class="inline-block w-8 text-slate-600 select-none mr-2">\${num}</span>\${escapeHtml(line)}`;
+      }).join('\n');
+      
+      document.getElementById('code-content').innerHTML = formatted;
+      document.getElementById('copy-btn-text').innerText = "Salin Kode";
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function changeBg(className) {
+      const container = document.getElementById('snap-bg');
+      container.className = className + " p-6 sm:p-10 md:p-12 rounded-2xl shadow-2xl transition-all duration-300";
+    }
+
+    function copyCurrentCode() {
+      const code = pages[activeTab].code;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copy-btn-text');
+        btn.innerText = "Tersalin! ✓";
+        setTimeout(() => { btn.innerText = "Salin Kode"; }, 2000);
+      });
+    }
+
+    // Init first tab
+    switchTab('login');
+  </script>
+</body>
+</html>
