@@ -1,0 +1,65 @@
+=== TEST RUNNER EXECUTION LOG ===
+Command: node --test-reporter=spec --test
+Working Directory: C:\Users\rizki\Documents\TUGAS KULIAH\capstone\Monitoring-Kerusakan-Mesin
+Environment: Node.js v22.18.0 (win32-x64)
+Git Commit Hash: 4aaec182688290f816cb10200bf6c4d39cbd6ca5 (branch: main)
+Execution Date: 2026-10-31 22:41:35 WIB
+
+▶ Modul Kalkulasi Downtime & Penyelesaian Kerusakan (Breakdown)
+  ✔ UT-DT-01: Menghitung selisih downtime 1 jam dengan tepat (60 menit) (2.4251ms)
+  ✔ UT-DT-02: Menghitung selisih downtime 2 jam 15 menit (135 menit) (0.1495ms)
+  ✔ UT-DT-03: Menolak jika waktu selesai perbaikan sama dengan waktu mulai (3.0597ms)
+  ✔ UT-DT-04: Menolak jika waktu selesai lebih awal daripada waktu mulai (0.3881ms)
+  ✔ UT-DT-05: Menolak jika string waktu tidak valid / corrupt (0.4602ms)
+  ✔ UT-DT-06: Sukses menyelesaikan kerusakan dengan 1 tindakan perbaikan (0.3051ms)
+  ✔ UT-DT-07: Menolak penyelesaian jika belum ada catatan perbaikan (maintenance) (0.2876ms)
+  ✔ UT-DT-08: Menolak penyelesaian jika status kerusakan sudah completed sebelumnya (0.5063ms)
+✔ Modul Kalkulasi Downtime & Penyelesaian Kerusakan (Breakdown) (10.8288ms)
+
+▶ Modul Validasi Data Mesin (Machine Input Validation)
+  ✔ UT-MC-01: Validasi berhasil untuk data mesin yang lengkap dan valid (1.5541ms)
+  ✔ UT-MC-02: Default status adalah 'active' jika tidak dicantumkan (0.2403ms)
+  ✔ UT-MC-03: Menolak jika kode mesin kosong atau hanya spasi (1.7797ms)
+  ✔ UT-MC-04: Menolak jika kode mesin melebihi batas 30 karakter (0.3037ms)
+  ✔ UT-MC-05: Menolak jika nama mesin kosong (0.2886ms)
+  ✔ UT-MC-06: Menolak jika lini produksi kosong (0.1752ms)
+  ✔ UT-MC-07: Menolak nilai status mesin yang tidak diizinkan (0.1749ms)
+✔ Modul Validasi Data Mesin (Machine Input Validation) (7.4302ms)
+
+▶ Modul Filter Tanggal Pencarian Laporan (Date Range Query)
+  ✔ UT-DQ-01: Rentang tanggal valid (start_date <= end_date) berhasil diparsing (16.0723ms)
+  ✔ UT-DQ-02: Dapat menerima start_date saja tanpa end_date (0.3197ms)
+  ✔ UT-DQ-03: Menolak jika end_date lebih awal dari start_date (1.4724ms)
+  ✔ UT-DQ-04: Menolak format tanggal non-ISO (misal format DD/MM/YYYY) (0.1836ms)
+  ✔ UT-DQ-05: Menolak nilai tanggal kalender fiktif (misal 30 Februari) (0.1923ms)
+✔ Modul Filter Tanggal Pencarian Laporan (Date Range Query) (20.1734ms)
+
+▶ Modul Metrik Kinerja & Dashboard (MTTR & Downtime Analysis)
+  ✔ UT-MT-01: Menghitung total downtime dan jumlah insiden yang selesai (1.4291ms)
+  ✔ UT-MT-02: Menghitung nilai Mean Time To Repair (MTTR) dengan benar (0.2944ms)
+  ✔ UT-MT-03: Membedakan insiden open (masih rusak) dan tidak memasukkannya ke total downtime (1.2342ms)
+  ✔ UT-MT-04: Menangani dataset kosong tanpa error pembagian dengan nol (division by zero) (0.2761ms)
+✔ Modul Metrik Kinerja & Dashboard (MTTR & Downtime Analysis) (5.4994ms)
+
+▶ Modul Autentikasi Pengguna & Format Response API
+  ✔ UT-AR-01: Validasi data login valid berhasil (2.0432ms)
+  ✔ UT-AR-02: Menolak jika username login kosong (0.8205ms)
+  ✔ UT-AR-03: Menolak jika password login kosong (1.0146ms)
+  ✔ UT-AR-04: Menolak username yang melebihi 50 karakter (0.1807ms)
+  ✔ UT-AR-05: Standard response format API memiliki format dan metadata yang seragam (3.2142ms)
+✔ Modul Autentikasi Pengguna & Format Response API (10.4202ms)
+
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 246.4142
+
+=== RECONCILIATION SUMMARY ===
+Total Sub-test Kasus UT : 29 (100% Pass)
+Total Tes Induk / Suite : 5 (100% Pass)
+Total Tes Test Runner   : 34 (100% Pass)
+Status Akhir            : ALL TESTS PASSED

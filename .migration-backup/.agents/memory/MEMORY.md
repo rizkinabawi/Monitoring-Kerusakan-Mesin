@@ -1,1 +1,0 @@
-- [Next App Router compatibility](next-app-router.md) — Keep Wouter behind a client-only boundary and align router roots in the Vite-derived scaffold.
