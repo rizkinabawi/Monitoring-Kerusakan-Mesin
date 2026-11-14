@@ -67,15 +67,15 @@ export function Shell({ children }: { children: ReactNode }) {
   const nav = (
     <>
       <div className="flex items-center gap-3 px-5 py-6">
-        <div className="grid size-9 place-items-center rounded-lg bg-amber-400 text-[#203b49]">
+        <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-amber-400 text-[#203b49]">
           <Factory className="size-5" />
         </div>
-        <div>
-          <div className="text-[12px] font-bold tracking-[.12em] text-white">
-            SHIFT / MONITOR
+        <div className="min-w-0">
+          <div className="text-[13px] font-bold tracking-[.10em] text-white">
+            MAINT-SCREEN
           </div>
-          <div className="mt-0.5 font-mono text-[9px] tracking-[.16em] text-slate-400">
-            OPERASI PABRIK
+          <div className="mt-0.5 text-[8.5px] leading-tight text-slate-400">
+            Maintenance Monitoring and Downtime Management System
           </div>
         </div>
       </div>
@@ -185,7 +185,7 @@ export function Shell({ children }: { children: ReactNode }) {
               <Menu className="size-5" />
             </Button>
             <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
-              <span>Operasional</span>
+              <span className="font-semibold text-slate-800">MAINT-SCREEN</span>
               <span className="text-slate-300">/</span>
               <span className="font-medium text-slate-700">
                 {links.find((l) => l.href === location)?.label ||

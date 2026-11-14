@@ -80,9 +80,9 @@ export default function BreakdownPage() {
   return (
     <>
       <PageHeading
-        eyebrow="Penanganan insiden"
+        eyebrow="MAINT-SCREEN · Penanganan Insiden"
         title="Kerusakan"
-        description="Catat gangguan produksi dan pantau tindak lanjut perawatannya."
+        description="MAINT-SCREEN (Maintenance Monitoring and Downtime Management System) — Catat gangguan produksi dan pantau tindak lanjut perawatannya."
       >
         <Button
           onClick={() => setShowForm(!showForm)}

@@ -119,9 +119,9 @@ export default function BreakdownDetailPage() {
     return (
       <>
         <PageHeading
-          eyebrow="Detail insiden"
+          eyebrow="MAINT-SCREEN · Detail Insiden"
           title="Catatan kerusakan"
-          description="Tinjau masalah yang dilaporkan dan riwayat perawatannya."
+          description="MAINT-SCREEN (Maintenance Monitoring and Downtime Management System) — Tinjau masalah yang dilaporkan dan riwayat perawatannya."
         />
         <LoadError message={errorText(query.error)} retry={() => query.refetch()} />
       </>
@@ -142,9 +142,9 @@ export default function BreakdownDetailPage() {
           Semua kerusakan
         </Link>
         <PageHeading
-          eyebrow={`Insiden / INC-${String(detail.id).padStart(5, "0")}`}
+          eyebrow={`MAINT-SCREEN · INC-${String(detail.id).padStart(5, "0")}`}
           title={detail.problem}
-          description={`${detail.machine_code} · ${detail.machine_name} · ${detail.line}`}
+          description={`MAINT-SCREEN — ${detail.machine_code} · ${detail.machine_name} · ${detail.line}`}
         >
           <Status value={detail.status} />
         </PageHeading>

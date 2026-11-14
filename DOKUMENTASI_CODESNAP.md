@@ -1,5 +1,5 @@
-# DOKUMENTASI CODESNAP HALAMAN SISTEM
-**SISTEM MONITORING KERUSAKAN DAN DOWNTIME MESIN**
+# DOKUMENTASI CODESNAP HALAMAN SISTEM MAINT-SCREEN
+**MAINT-SCREEN (Maintenance Monitoring and Downtime Management System)**
 
 Dokumen ini berisi potongan kode inti (*CodeSnap*) dari setiap halaman yang telah dipecah secara modular. Format ini siap disalin ke alat pembuat gambar (*CodeSnap / Carbon*) atau langsung dilampirkan ke **Bab 4: Implementasi Antarmuka Sistem**.
 

@@ -75,9 +75,9 @@ export default function MachinePage() {
   return (
     <>
       <PageHeading
-        eyebrow="Daftar aset"
+        eyebrow="MAINT-SCREEN · Daftar Aset"
         title="Mesin"
-        description="Data peralatan dan status operasional terkini."
+        description="MAINT-SCREEN (Maintenance Monitoring and Downtime Management System) — Data peralatan dan status operasional terkini."
       >
         <Button
           className="h-10 rounded-lg bg-[#244858] hover:bg-[#1b3948]"

@@ -39,11 +39,14 @@ export default function LoginPage() {
           <div className="grid size-10 place-items-center rounded-xl bg-amber-400 text-slate-900">
             <Factory className="size-5" />
           </div>
-          <span className="text-sm font-semibold tracking-wide">SHIFT / MONITOR</span>
+          <div className="flex flex-col">
+            <span className="text-base font-bold tracking-wide text-white">MAINT-SCREEN</span>
+            <span className="text-[10px] text-slate-300">Maintenance Monitoring and Downtime Management System</span>
+          </div>
         </div>
         <div className="relative max-w-lg">
           <div className="mb-7 flex items-center gap-2 font-mono text-xs uppercase tracking-[.17em] text-amber-300">
-            <span className="size-2 rounded-full bg-amber-300" /> Konsol operasi pabrik
+            <span className="size-2 rounded-full bg-amber-300" /> Konsol MAINT-SCREEN
           </div>
           <h1 className="text-5xl font-semibold leading-[1.08] tracking-[-.05em]">
             Setiap menit<br />tercatat.
@@ -64,7 +67,10 @@ export default function LoginPage() {
             <div className="grid size-10 place-items-center rounded-xl bg-[#203b49] text-amber-300">
               <Factory className="size-5" />
             </div>
-            <b className="text-sm tracking-wide">SHIFT / MONITOR</b>
+            <div className="flex flex-col">
+              <b className="text-sm font-bold tracking-wide">MAINT-SCREEN</b>
+              <span className="text-[10px] text-muted-foreground">Maintenance Monitoring and Downtime Management System</span>
+            </div>
           </div>
           <div className="mb-8">
             <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[.18em] text-amber-700">
