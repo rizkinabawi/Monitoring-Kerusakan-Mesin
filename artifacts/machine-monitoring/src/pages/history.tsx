@@ -331,9 +331,9 @@ export default function HistoryPage() {
   return (
     <>
       <PageHeading
-        eyebrow="MAINT-SCREEN · Riwayat Insiden"
+        eyebrow="SIGMA · Riwayat Insiden"
         title="Riwayat Kerusakan"
-        description="MAINT-SCREEN (Maintenance Monitoring and Downtime Management System) — Riwayat kerusakan masa lalu dan evaluasi hasil perbaikan."
+        description="SIGMA (Sistem Informasi Gangguan Mesin) — Riwayat kerusakan masa lalu dan evaluasi hasil perbaikan."
       >
         <ExportPanel machines={machineList} />
       </PageHeading>

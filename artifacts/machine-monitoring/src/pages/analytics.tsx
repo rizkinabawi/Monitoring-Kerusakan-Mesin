@@ -97,9 +97,9 @@ export default function AnalyticsPage() {
   return (
     <>
       <PageHeading
-        eyebrow="MAINT-SCREEN · Wawasan Operasional"
+        eyebrow="SIGMA · Wawasan Operasional"
         title="Analitik Mesin"
-        description="MAINT-SCREEN (Maintenance Monitoring and Downtime Management System) — Pola kerusakan, waktu henti, dan distribusi status mesin secara visual."
+        description="SIGMA (Sistem Informasi Gangguan Mesin) — Pola kerusakan, waktu henti, dan distribusi status mesin secara visual."
       />
       <div className="mb-5 flex flex-wrap items-end gap-3 rounded-xl border border-[#e4e1d8] bg-white p-3">
         <RangeFilters value={range} onChange={setRange} line={line} setLine={setLine} />

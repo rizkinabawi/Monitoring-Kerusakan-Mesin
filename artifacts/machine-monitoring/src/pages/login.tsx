@@ -40,23 +40,28 @@ export default function LoginPage() {
             <Factory className="size-5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-base font-bold tracking-wide text-white">MAINT-SCREEN</span>
-            <span className="text-[10px] text-slate-300">Maintenance Monitoring and Downtime Management System</span>
+            <span className="text-xl font-black tracking-wider text-white">SIGMA</span>
+            <span className="text-[10px] font-medium tracking-wide text-amber-200">SISTEM INFORMASI GANGGUAN MESIN</span>
           </div>
         </div>
         <div className="relative max-w-lg">
-          <div className="mb-7 flex items-center gap-2 font-mono text-xs uppercase tracking-[.17em] text-amber-300">
-            <span className="size-2 rounded-full bg-amber-300" /> Konsol MAINT-SCREEN
+          <div className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-[.15em] text-amber-300">
+            <span className="size-2 rounded-full bg-amber-300" /> Pantau Kerusakan, Kendalikan Downtime
           </div>
           <h1 className="text-5xl font-semibold leading-[1.08] tracking-[-.05em]">
-            Setiap menit<br />tercatat.
+            Monitor Every<br />Breakdown.
           </h1>
           <p className="mt-5 max-w-md text-base leading-7 text-slate-300">
-            Pantau kondisi mesin, kerusakan yang sedang ditangani, dan pekerjaan perawatan agar produksi terus berjalan.
+            Sistem digital untuk pencatatan kerusakan mesin, monitoring downtime, dan pengelolaan aktivitas maintenance secara terintegrasi.
           </p>
+          <div className="mt-6 flex flex-wrap gap-2 text-[11px] font-medium text-slate-300">
+            <span className="rounded-md border border-white/15 bg-white/5 px-2.5 py-1">Machine Monitoring</span>
+            <span className="rounded-md border border-white/15 bg-white/5 px-2.5 py-1">Downtime Tracking</span>
+            <span className="rounded-md border border-white/15 bg-white/5 px-2.5 py-1">Maintenance</span>
+          </div>
         </div>
         <p className="relative font-mono text-[10px] tracking-[.14em] text-slate-400">
-          OPERASI PERAWATAN · AKSES STAF TERLINDUNGI
+          SIGMA · AKSES PETUGAS MAINTENANCE &amp; OPERATOR
         </p>
       </section>
 
@@ -68,17 +73,17 @@ export default function LoginPage() {
               <Factory className="size-5" />
             </div>
             <div className="flex flex-col">
-              <b className="text-sm font-bold tracking-wide">MAINT-SCREEN</b>
-              <span className="text-[10px] text-muted-foreground">Maintenance Monitoring and Downtime Management System</span>
+              <b className="text-lg font-black tracking-wider">SIGMA</b>
+              <span className="text-[10px] text-muted-foreground">Sistem Informasi Gangguan Mesin</span>
             </div>
           </div>
           <div className="mb-8">
             <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[.18em] text-amber-700">
-              Akses staf
+              Akses Sistem
             </p>
             <h2 className="text-3xl font-semibold tracking-[-.04em]">Masuk ke akun Anda</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Gunakan akun operasional yang telah diberikan.
+              Pantau Kerusakan, Kendalikan Downtime.
             </p>
           </div>
           <form onSubmit={submit} className="space-y-5">

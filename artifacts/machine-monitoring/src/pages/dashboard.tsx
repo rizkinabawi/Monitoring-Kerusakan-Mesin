@@ -61,9 +61,9 @@ export default function DashboardPage() {
     return (
       <>
         <PageHeading
-          eyebrow="MAINT-SCREEN · Operasional"
-          title="Ringkasan giliran kerja"
-          description="MAINT-SCREEN (Maintenance Monitoring and Downtime Management System) — Kondisi mesin dan waktu henti di seluruh area produksi."
+          eyebrow="SIGMA · Operasional"
+          title="Ringkasan Giliran Kerja"
+          description="SIGMA (Sistem Informasi Gangguan Mesin) — Pantau Kerusakan, Kendalikan Downtime di seluruh area produksi."
         />
         <LoadError
           message={errorText(summary.error || downtime.error || frequency.error)}
@@ -108,9 +108,9 @@ export default function DashboardPage() {
   return (
     <>
       <PageHeading
-        eyebrow="MAINT-SCREEN · Operasional"
-        title="Ringkasan giliran kerja"
-        description="MAINT-SCREEN (Maintenance Monitoring and Downtime Management System) — Pantau kondisi peralatan dan gangguan produksi dengan cepat."
+        eyebrow="SIGMA · Operasional"
+        title="Ringkasan Giliran Kerja"
+        description="SIGMA (Sistem Informasi Gangguan Mesin) — Pantau Kerusakan, Kendalikan Downtime."
       >
         <Link href="/breakdowns">
           <Button

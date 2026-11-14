@@ -71,11 +71,11 @@ export function Shell({ children }: { children: ReactNode }) {
           <Factory className="size-5" />
         </div>
         <div className="min-w-0">
-          <div className="text-[13px] font-bold tracking-[.10em] text-white">
-            MAINT-SCREEN
+          <div className="text-[14px] font-bold tracking-[.12em] text-white">
+            SIGMA
           </div>
-          <div className="mt-0.5 text-[8.5px] leading-tight text-slate-400">
-            Maintenance Monitoring and Downtime Management System
+          <div className="mt-0.5 text-[9px] leading-tight text-slate-400">
+            Sistem Informasi Gangguan Mesin
           </div>
         </div>
       </div>
@@ -185,7 +185,7 @@ export function Shell({ children }: { children: ReactNode }) {
               <Menu className="size-5" />
             </Button>
             <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
-              <span className="font-semibold text-slate-800">MAINT-SCREEN</span>
+              <span className="font-semibold text-slate-800">SIGMA</span>
               <span className="text-slate-300">/</span>
               <span className="font-medium text-slate-700">
                 {links.find((l) => l.href === location)?.label ||
